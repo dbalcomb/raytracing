@@ -14,6 +14,7 @@ use self::camera::Camera;
 use self::color::write_color;
 use self::hittable::{HitRecord, Hittable};
 use self::hittable_list::HittableList;
+use self::material::{Lambertian, Metal};
 use self::ray::Ray;
 use self::rtweekend::random_f64;
 use self::sphere::Sphere;
@@ -60,15 +61,30 @@ fn main() {
 
     let mut world = HittableList::default();
 
-    world.add(Rc::new(Sphere::new(
-        Point3::new(0.0, 0.0, -1.0),
-        0.5,
-        Rc::new(()),
-    )));
+    let material_ground = Rc::new(Lambertian::new(Color::new(0.8, 0.8, 0.0)));
+    let material_center = Rc::new(Lambertian::new(Color::new(0.7, 0.3, 0.3)));
+    let material_left = Rc::new(Metal::new(Color::new(0.8, 0.8, 0.8)));
+    let material_right = Rc::new(Metal::new(Color::new(0.8, 0.6, 0.2)));
+
     world.add(Rc::new(Sphere::new(
         Point3::new(0.0, -100.5, -1.0),
         100.0,
-        Rc::new(()),
+        material_ground,
+    )));
+    world.add(Rc::new(Sphere::new(
+        Point3::new(0.0, 0.0, -1.0),
+        0.5,
+        material_center,
+    )));
+    world.add(Rc::new(Sphere::new(
+        Point3::new(-1.0, 0.0, -1.0),
+        0.5,
+        material_left,
+    )));
+    world.add(Rc::new(Sphere::new(
+        Point3::new(1.0, 0.0, -1.0),
+        0.5,
+        material_right,
     )));
 
     // Camera
