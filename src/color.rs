@@ -1,9 +1,11 @@
 use crate::vec3::Color;
 
-pub fn write_color(pixel_color: Color) {
-    let r = (pixel_color.x * 255.999) as u8;
-    let g = (pixel_color.y * 255.999) as u8;
-    let b = (pixel_color.z * 255.999) as u8;
+pub fn write_color(pixel_color: Color, samples_per_pixel: u32) {
+    let scale = 1.0 / samples_per_pixel as f64;
+
+    let r = (256.0 * (pixel_color.x * scale).clamp(0.0, 0.999)) as u8;
+    let g = (256.0 * (pixel_color.y * scale).clamp(0.0, 0.999)) as u8;
+    let b = (256.0 * (pixel_color.z * scale).clamp(0.0, 0.999)) as u8;
 
     println!("{r} {g} {b}");
 }
