@@ -1,4 +1,5 @@
 pub mod color;
+pub mod ray;
 pub mod vec3;
 
 use self::color::write_color;
