@@ -47,6 +47,16 @@ impl Vec3 {
         Self::random_in_unit_sphere().unit_vector()
     }
 
+    pub fn random_in_hemisphere(normal: Vec3) -> Self {
+        let in_unit_sphere = Self::random_in_unit_sphere();
+
+        if in_unit_sphere.dot(normal) > 0.0 {
+            in_unit_sphere
+        } else {
+            -in_unit_sphere
+        }
+    }
+
     pub fn length(&self) -> f64 {
         self.length_squared().sqrt()
     }
