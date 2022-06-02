@@ -17,7 +17,7 @@ use self::hittable_list::HittableList;
 use self::ray::Ray;
 use self::rtweekend::random_f64;
 use self::sphere::Sphere;
-use self::vec3::{Color, Point3, Vec3};
+use self::vec3::{Color, Point3};
 
 fn ray_color(ray: &Ray, world: &dyn Hittable, depth: i32) -> Color {
     // If we've exceeded the ray bounce limit, no more light is gathered.
@@ -28,9 +28,17 @@ fn ray_color(ray: &Ray, world: &dyn Hittable, depth: i32) -> Color {
     let mut rec = HitRecord::default();
 
     if world.hit(ray, 0.001, f64::INFINITY, &mut rec) {
-        let target = rec.p + Vec3::random_in_hemisphere(rec.normal);
+        let mut scattered = Ray::default();
+        let mut attenuation = Color::default();
 
-        return 0.5 * ray_color(&Ray::new(rec.p, target - rec.p), world, depth - 1);
+        if rec
+            .material
+            .scatter(ray, &rec, &mut attenuation, &mut scattered)
+        {
+            return attenuation * ray_color(&scattered, world, depth - 1);
+        }
+
+        return Color::new(0.0, 0.0, 0.0);
     }
 
     let unit_direction = ray.direction.unit_vector();

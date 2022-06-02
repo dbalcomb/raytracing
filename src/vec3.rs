@@ -86,6 +86,10 @@ impl Vec3 {
 
         (self.x.abs() < s) && (self.y.abs() < s) && (self.z.abs() < s)
     }
+
+    pub fn reflect(&self, rhs: Self) -> Self {
+        *self - 2.0 * self.dot(rhs) * rhs
+    }
 }
 
 impl Default for Vec3 {
