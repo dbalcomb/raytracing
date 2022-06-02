@@ -18,13 +18,18 @@ use self::rtweekend::random_f64;
 use self::sphere::Sphere;
 use self::vec3::{Color, Point3, Vec3};
 
-fn ray_color(ray: &Ray, world: &dyn Hittable) -> Color {
+fn ray_color(ray: &Ray, world: &dyn Hittable, depth: i32) -> Color {
+    // If we've exceeded the ray bounce limit, no more light is gathered.
+    if depth <= 0 {
+        return Color::new(0.0, 0.0, 0.0);
+    }
+
     let mut rec = HitRecord::default();
 
     if world.hit(ray, 0.0, f64::INFINITY, &mut rec) {
         let target = rec.p + rec.normal + Vec3::random_in_unit_sphere();
 
-        return 0.5 * ray_color(&Ray::new(rec.p, target - rec.p), world);
+        return 0.5 * ray_color(&Ray::new(rec.p, target - rec.p), world, depth - 1);
     }
 
     let unit_direction = ray.direction.unit_vector();
@@ -40,6 +45,7 @@ fn main() {
     let image_width = 400;
     let image_height = (image_width as f64 / aspect_ratio) as i32;
     let samples_per_pixel = 100;
+    let max_depth = 50;
 
     // World
 
@@ -67,7 +73,7 @@ fn main() {
                 let v = (j as f64 + random_f64()) / (image_height - 1) as f64;
                 let r = cam.get_ray(u, v);
 
-                pixel_color += ray_color(&r, &world);
+                pixel_color += ray_color(&r, &world, max_depth);
             }
 
             write_color(pixel_color, samples_per_pixel);
