@@ -11,3 +11,9 @@ pub trait Material {
         scattered: &mut Ray,
     ) -> bool;
 }
+
+impl Material for () {
+    fn scatter(&self, _: &Ray, _: &HitRecord, _: &mut Color, _: &mut Ray) -> bool {
+        false
+    }
+}
