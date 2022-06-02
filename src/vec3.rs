@@ -1,6 +1,8 @@
 use std::fmt::{self, Display};
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub};
 
+use crate::rtweekend::{random_f64, random_f64_min_max};
+
 pub type Color = Vec3;
 
 pub type Point3 = Vec3;
@@ -15,6 +17,30 @@ pub struct Vec3 {
 impl Vec3 {
     pub fn new(x: f64, y: f64, z: f64) -> Self {
         Self { x, y, z }
+    }
+
+    pub fn random() -> Self {
+        Self::new(random_f64(), random_f64(), random_f64())
+    }
+
+    pub fn random_between(min: f64, max: f64) -> Self {
+        Self::new(
+            random_f64_min_max(min, max),
+            random_f64_min_max(min, max),
+            random_f64_min_max(min, max),
+        )
+    }
+
+    pub fn random_in_unit_sphere() -> Self {
+        loop {
+            let p = Self::random_between(-1.0, 1.0);
+
+            if p.length_squared() >= 1.0 {
+                continue;
+            }
+
+            return p;
+        }
     }
 
     pub fn length(&self) -> f64 {

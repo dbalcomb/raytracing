@@ -16,13 +16,15 @@ use self::hittable_list::HittableList;
 use self::ray::Ray;
 use self::rtweekend::random_f64;
 use self::sphere::Sphere;
-use self::vec3::{Color, Point3};
+use self::vec3::{Color, Point3, Vec3};
 
 fn ray_color(ray: &Ray, world: &dyn Hittable) -> Color {
     let mut rec = HitRecord::default();
 
     if world.hit(ray, 0.0, f64::INFINITY, &mut rec) {
-        return 0.5 * (rec.normal + Color::new(1.0, 1.0, 1.0));
+        let target = rec.p + rec.normal + Vec3::random_in_unit_sphere();
+
+        return 0.5 * ray_color(&Ray::new(rec.p, target - rec.p), world);
     }
 
     let unit_direction = ray.direction.unit_vector();
