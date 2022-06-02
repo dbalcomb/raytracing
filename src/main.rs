@@ -1,4 +1,8 @@
+pub mod color;
 pub mod vec3;
+
+use self::color::write_color;
+use self::vec3::Color;
 
 fn main() {
     // Image
@@ -14,15 +18,13 @@ fn main() {
         eprintln!("Scanlines remaining: {j}");
 
         for i in 0..image_width {
-            let r = i as f64 / (image_width - 1) as f64;
-            let g = j as f64 / (image_height - 1) as f64;
-            let b = 0.25;
+            let pixel_color = Color::new(
+                i as f64 / (image_width - 1) as f64,
+                j as f64 / (image_height - 1) as f64,
+                0.25,
+            );
 
-            let ir = (255.999 * r) as u8;
-            let ig = (255.999 * g) as u8;
-            let ib = (255.999 * b) as u8;
-
-            println!("{ir} {ig} {ib}");
+            write_color(pixel_color);
         }
     }
 
